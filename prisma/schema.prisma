@@ -1,0 +1,52 @@
+// The Daily Code — Prisma schema
+// Single-user, local-first MVP. No auth, one row per (date, habit).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Habit {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String
+  description String?
+  isDefault   Boolean  @default(true)
+  isActive    Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  checks HabitCheck[]
+
+  @@index([isActive, sortOrder])
+}
+
+model DayEntry {
+  id        String   @id @default(cuid())
+  date      DateTime @unique @db.Date
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  checks HabitCheck[]
+}
+
+model HabitCheck {
+  id          String    @id @default(cuid())
+  dayEntryId  String
+  habitId     String
+  completed   Boolean   @default(false)
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  dayEntry DayEntry @relation(fields: [dayEntryId], references: [id], onDelete: Cascade)
+  habit    Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+
+  @@unique([dayEntryId, habitId])
+  @@index([habitId])
+}

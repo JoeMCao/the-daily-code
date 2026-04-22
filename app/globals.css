@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --paper: #fafaf9;
+  --ink: #1c1917;
+  --ink-soft: #44403c;
+  --ink-faint: #a8a29e;
+  --line: #e7e5e4;
+  --green: #059669; /* emerald-600 */
+  --green-soft: #d1fae5; /* emerald-100 */
+}
+
+html,
+body {
+  background: var(--paper);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: #dcfce7;
+  color: #064e3b;
+}
+
+/* Very subtle dotted grid background to give the app a "notebook" feel
+   without being loud. Respects reduced motion / contrast preferences. */
+@media (prefers-reduced-transparency: no-preference) {
+  body {
+    background-image: radial-gradient(#e7e5e4 1px, transparent 1px);
+    background-size: 28px 28px;
+    background-position: -14px -14px;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
