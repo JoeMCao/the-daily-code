@@ -16,6 +16,7 @@ export type DayData = {
   habits: HabitWithCheck[];
   completedCount: number;
   totalCount: number;
+  journal: string;
 };
 
 export async function getActiveHabits(): Promise<Habit[]> {
@@ -75,16 +76,24 @@ export async function ensureDay(dateKey: DateKey): Promise<DayData> {
     habits: merged,
     completedCount,
     totalCount: habits.length,
+    journal: day.journal ?? "",
   };
 }
 
+export type DaySummary = {
+  completed: number;
+  total: number;
+  /** True if a DayEntry row exists for this calendar day (user opened / synced that day). */
+  hasEntry: boolean;
+};
+
 /**
  * Lightweight read used by week/month views. Does NOT create missing rows.
- * Returns a map of DateKey -> { completed, total } for all given keys.
+ * Returns a map of DateKey -> summary for all given keys.
  */
 export async function getDaySummaries(
   keys: DateKey[],
-): Promise<Map<DateKey, { completed: number; total: number }>> {
+): Promise<Map<DateKey, DaySummary>> {
   if (keys.length === 0) return new Map();
 
   const habits = await getActiveHabits();
@@ -100,13 +109,13 @@ export async function getDaySummaries(
     },
   });
 
-  const map = new Map<DateKey, { completed: number; total: number }>();
+  const map = new Map<DateKey, DaySummary>();
   for (const k of keys) {
-    map.set(k, { completed: 0, total: totalActive });
+    map.set(k, { completed: 0, total: totalActive, hasEntry: false });
   }
   for (const e of entries) {
     const k = utcToDateKey(e.date);
-    map.set(k, { completed: e.checks.length, total: totalActive });
+    map.set(k, { completed: e.checks.length, total: totalActive, hasEntry: true });
   }
   return map;
 }

@@ -3,11 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --paper: #fafaf9;
+  --paper: #f5f5f4;
   --ink: #1c1917;
   --ink-soft: #44403c;
   --ink-faint: #a8a29e;
-  --line: #e7e5e4;
+  /* UI chrome: slightly stronger than stone-200 for clearer structure */
+  --line: #d6d3d1;
+  --line-subtle: #e7e5e4;
   --green: #059669; /* emerald-600 */
   --green-soft: #d1fae5; /* emerald-100 */
 }
@@ -29,7 +31,7 @@ body {
    without being loud. Respects reduced motion / contrast preferences. */
 @media (prefers-reduced-transparency: no-preference) {
   body {
-    background-image: radial-gradient(#e7e5e4 1px, transparent 1px);
+    background-image: radial-gradient(var(--line-subtle) 1px, transparent 1px);
     background-size: 28px 28px;
     background-position: -14px -14px;
   }

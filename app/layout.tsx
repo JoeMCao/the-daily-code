@@ -1,8 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Header } from "@/components/Header";
-import { Quote } from "@/components/Quote";
-import { todayKey } from "@/lib/date";
 
 export const metadata: Metadata = {
   title: "The Daily Code",
@@ -11,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#fafaf9",
+  themeColor: "#f5f5f4",
   width: "device-width",
   initialScale: 1,
 };
@@ -21,16 +19,12 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const today = todayKey();
   return (
     <html lang="en">
       <body className="min-h-screen font-sans text-ink">
         <div className="mx-auto flex min-h-screen max-w-3xl flex-col px-5 sm:px-8">
           <Header />
-          <main className="flex-1 pb-24 pt-4">{children}</main>
-          <footer className="border-t border-stone-200/70 py-8">
-            <Quote dateKey={today} />
-          </footer>
+          <main className="flex min-h-0 flex-1 flex-col pb-24 pt-4">{children}</main>
         </div>
       </body>
     </html>

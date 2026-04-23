@@ -11,7 +11,11 @@ export default async function MonthPage() {
   const summaries = await getDaySummaries(keys);
 
   const cells: MonthCell[] = keys.map((k) => {
-    const s = summaries.get(k) ?? { completed: 0, total: 0 };
+    const s = summaries.get(k) ?? {
+      completed: 0,
+      total: 0,
+      hasEntry: false,
+    };
     return { dateKey: k, completed: s.completed, total: s.total };
   });
 

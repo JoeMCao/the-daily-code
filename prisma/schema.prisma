@@ -1,5 +1,11 @@
 // The Daily Code — Prisma schema
 // Single-user, local-first MVP. No auth, one row per (date, habit).
+//
+// Profile is intentionally minimal: it exists so views like Memento Mori
+// can be grounded in real personal data (dateOfBirth, assumedLifespanYears).
+// It is shaped like a user row so future auth / multi-user flows can map
+// 1 profile per user without reshaping callers. For now we treat the first
+// Profile row as "the" active profile.
 
 generator client {
   provider = "prisma-client-js"
@@ -8,6 +14,15 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Profile {
+  id                   String   @id @default(cuid())
+  name                 String?
+  dateOfBirth          DateTime @db.Date
+  assumedLifespanYears Int      @default(88)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 }
 
 model Habit {
@@ -29,6 +44,7 @@ model Habit {
 model DayEntry {
   id        String   @id @default(cuid())
   date      DateTime @unique @db.Date
+  journal   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

@@ -7,34 +7,40 @@ const VIEWS = [
   { href: "/", label: "Day" },
   { href: "/week", label: "Week" },
   { href: "/month", label: "Month" },
-];
+  { href: "/year", label: "Year" },
+  { href: "/memento-mori", label: "Memento Mori" },
+] as const;
+
+function segmentActive(pathname: string, href: string): boolean {
+  if (href === "/") {
+    return pathname === "/" || pathname.startsWith("/day");
+  }
+  if (href === "/memento-mori") {
+    return pathname.startsWith("/memento-mori");
+  }
+  return pathname.startsWith(href);
+}
 
 export function ViewToggle() {
   const pathname = usePathname();
 
-  const isActive = (href: string) => {
-    if (href === "/") {
-      return pathname === "/" || pathname.startsWith("/day");
-    }
-    return pathname.startsWith(href);
-  };
-
   return (
     <nav
       aria-label="View"
-      className="inline-flex items-center rounded-full border border-stone-200 bg-white/70 p-1 text-sm shadow-soft backdrop-blur"
+      className="flex flex-wrap items-baseline gap-x-5 gap-y-1 text-sm sm:gap-x-6"
     >
       {VIEWS.map((v) => {
-        const active = isActive(v.href);
+        const active = segmentActive(pathname, v.href);
         return (
           <Link
             key={v.href}
             href={v.href}
+            aria-current={active ? "page" : undefined}
             className={[
-              "rounded-full px-4 py-1.5 transition-colors",
+              "shrink-0 rounded-sm py-1 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-ink/15",
               active
-                ? "bg-ink text-paper"
-                : "text-ink-soft hover:text-ink",
+                ? "font-medium text-ink"
+                : "font-normal text-ink-faint hover:text-ink-soft",
             ].join(" ")}
           >
             {v.label}

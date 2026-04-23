@@ -108,3 +108,51 @@ export function isToday(key: DateKey): boolean {
 export function isFuture(key: DateKey): boolean {
   return key > todayKey();
 }
+
+/**
+ * Monday date keys for each Mon–Sun week that touches the calendar year
+ * (at least one day between Jan 1 and Dec 31 inclusive). Monday-first, consistent
+ * with startOfWeek. Typically 52 or 53 weeks.
+ */
+/**
+ * ISO week number (1–53) for the given Monday and the ISO year that week belongs to.
+ */
+export function isoWeekNumberForMonday(mondayKey: DateKey): {
+  isoYear: number;
+  week: number;
+} {
+  const monday = fromDateKey(mondayKey);
+  const thursday = addDays(monday, 3);
+  let isoYear = thursday.getFullYear();
+  let jan4 = new Date(isoYear, 0, 4);
+  let week1Monday = startOfWeek(jan4);
+  let diffDays = Math.round(
+    (monday.getTime() - week1Monday.getTime()) / 86400000,
+  );
+  let week = Math.floor(diffDays / 7) + 1;
+  if (week < 1) {
+    isoYear -= 1;
+    jan4 = new Date(isoYear, 0, 4);
+    week1Monday = startOfWeek(jan4);
+    diffDays = Math.round(
+      (monday.getTime() - week1Monday.getTime()) / 86400000,
+    );
+    week = Math.floor(diffDays / 7) + 1;
+  }
+  return { isoYear, week: Math.min(53, Math.max(1, week)) };
+}
+
+export function weekMondayKeysForCalendarYear(year: number): DateKey[] {
+  const jan1 = new Date(year, 0, 1);
+  const dec31 = new Date(year, 11, 31);
+  let cursor = startOfWeek(jan1);
+  const keys: DateKey[] = [];
+  while (true) {
+    if (cursor > dec31) break;
+    const weekEnd = addDays(cursor, 6);
+    const touchesYear = weekEnd >= jan1 && cursor <= dec31;
+    if (touchesYear) keys.push(toDateKey(cursor));
+    cursor = addDays(cursor, 7);
+  }
+  return keys;
+}

@@ -31,7 +31,11 @@ const config: Config = {
           soft: "#44403c",
           faint: "#a8a29e",
         },
-        paper: "#fafaf9",
+        paper: "var(--paper)",
+        line: {
+          DEFAULT: "var(--line)",
+          subtle: "var(--line-subtle)",
+        },
       },
       boxShadow: {
         soft: "0 1px 2px rgba(0,0,0,0.03), 0 0 0 1px rgba(0,0,0,0.04)",

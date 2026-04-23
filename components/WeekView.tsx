@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ViewPageHeader } from "@/components/ViewPageHeader";
 import {
   DateKey,
   formatDayNumber,
@@ -17,22 +18,18 @@ type WeekRow = {
 export function WeekView({
   weekStartLabel,
   rows,
+  eyebrow = "This week",
 }: {
   weekStartLabel: string;
   rows: WeekRow[];
+  /** e.g. "This week" when viewing the current ISO week, or "Week" otherwise */
+  eyebrow?: string;
 }) {
   return (
     <section className="flex flex-col gap-8">
-      <div>
-        <p className="text-xs uppercase tracking-[0.2em] text-ink-faint">
-          This week
-        </p>
-        <h1 className="mt-1 font-serif text-3xl tracking-tight text-ink sm:text-4xl">
-          {weekStartLabel}
-        </h1>
-      </div>
+      <ViewPageHeader eyebrow={eyebrow} title={weekStartLabel} />
 
-      <ol className="divide-y divide-stone-200/80 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-soft">
+      <ol className="divide-y divide-line-subtle/90 overflow-hidden rounded-xl border border-line-subtle bg-white shadow-soft">
         {rows.map((row) => {
           const done = majorityComplete(row);
           const future = isFuture(row.dateKey);
@@ -50,7 +47,7 @@ export function WeekView({
                 aria-disabled={future}
               >
                 <div className="w-14 flex-none">
-                  <p className="text-[11px] uppercase tracking-[0.18em] text-ink-faint">
+                  <p className="text-[10px] uppercase tracking-[0.18em] text-ink-faint">
                     {formatShortWeekday(row.dateKey)}
                   </p>
                   <p

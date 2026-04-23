@@ -33,11 +33,11 @@ export function HabitToggle({
       disabled={disabled}
       aria-pressed={optimisticCompleted}
       className={[
-        "group flex w-full items-center gap-4 rounded-xl border px-4 py-3.5 text-left transition-all",
+        "group flex w-full items-center gap-4 rounded-xl border px-4 py-3 text-left transition-all",
         "disabled:cursor-not-allowed disabled:opacity-60",
         optimisticCompleted
-          ? "border-emerald-300 bg-emerald-50/80 hover:bg-emerald-50"
-          : "border-stone-200 bg-white hover:border-stone-300 hover:bg-stone-50",
+          ? "border-emerald-200 bg-emerald-50/70 hover:bg-emerald-50"
+          : "border-line-subtle bg-white hover:border-stone-300/70 hover:bg-stone-50",
       ].join(" ")}
     >
       <span
