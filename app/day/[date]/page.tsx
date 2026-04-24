@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { DayView } from "@/components/DayView";
 import { ensureDay } from "@/lib/habits";
 import { isValidDateKey } from "@/lib/date";
+import { todayKeyForRequest } from "@/lib/request-time-zone";
 
 export const dynamic = "force-dynamic";
 
@@ -13,5 +14,5 @@ export default async function DayDetailPage({
   const { date } = params;
   if (!isValidDateKey(date)) notFound();
   const day = await ensureDay(date);
-  return <DayView day={day} />;
+  return <DayView day={day} todayKey={todayKeyForRequest()} />;
 }

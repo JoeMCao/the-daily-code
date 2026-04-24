@@ -26,11 +26,13 @@ export function MonthView({
   monthLabel,
   cells,
   totalsLabel,
+  todayKey,
 }: {
   anchorISO: string;
   monthLabel: string;
   cells: MonthCell[];
   totalsLabel: string;
+  todayKey: DateKey;
 }) {
   const anchor = new Date(anchorISO);
 
@@ -58,8 +60,8 @@ export function MonthView({
             const sameMonth = isSameMonth(cell.dateKey, anchor);
             const done = majorityComplete(cell);
             const empty = cell.completed === 0;
-            const future = isFuture(cell.dateKey);
-            const today = isToday(cell.dateKey);
+            const future = isFuture(cell.dateKey, todayKey);
+            const today = isToday(cell.dateKey, todayKey);
 
             const base =
               "relative aspect-square rounded-xl border text-left transition-all focus:outline-none focus:ring-2 focus:ring-ink/20";

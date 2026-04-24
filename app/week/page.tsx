@@ -5,9 +5,9 @@ import {
   fromDateKey,
   isValidDateKey,
   startOfWeek,
-  todayKey,
   weekKeys,
 } from "@/lib/date";
+import { todayKeyForRequest } from "@/lib/request-time-zone";
 
 export const dynamic = "force-dynamic";
 
@@ -16,10 +16,11 @@ export default async function WeekPage({
 }: {
   searchParams: { start?: string };
 }) {
+  const today = todayKeyForRequest();
   const anchorDate =
     searchParams.start && isValidDateKey(searchParams.start)
       ? fromDateKey(searchParams.start)
-      : new Date();
+      : fromDateKey(today);
   const weekAnchor = startOfWeek(anchorDate);
   const keys = weekKeys(weekAnchor);
   const summaries = await getDaySummaries(keys);
@@ -44,13 +45,14 @@ export default async function WeekPage({
       year: "numeric",
     });
 
-  const isThisWeek = keys.includes(todayKey());
+  const isThisWeek = keys.includes(today);
 
   return (
     <WeekView
       eyebrow={isThisWeek ? "This week" : "Week"}
       weekStartLabel={label}
       rows={rows}
+      todayKey={today}
     />
   );
 }

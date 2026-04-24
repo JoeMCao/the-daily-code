@@ -1,5 +1,5 @@
 import type { DateKey } from "@/lib/date";
-import { isFuture } from "@/lib/date";
+import { isFuture, todayKey } from "@/lib/date";
 import { majorityComplete } from "@/lib/habits";
 
 export type WeekTier = "strong" | "mixed" | "weak" | "empty";
@@ -8,8 +8,9 @@ export type WeekTier = "strong" | "mixed" | "weak" | "empty";
 export function dayCompletionScore(
   summary: { completed: number; total: number },
   dateKey: DateKey,
+  today: DateKey = todayKey(),
 ): number {
-  if (isFuture(dateKey)) return 0;
+  if (isFuture(dateKey, today)) return 0;
   if (summary.total <= 0) return 0;
   if (majorityComplete(summary)) return 1;
   if (summary.completed > 0) return 0.5;
@@ -66,13 +67,14 @@ export type DayBreakdown = { strong: number; partial: number; empty: number };
 export function dayBreakdownFromScores(
   summaries: { completed: number; total: number }[],
   keys: DateKey[],
+  today: DateKey,
 ): DayBreakdown {
   const out: DayBreakdown = { strong: 0, partial: 0, empty: 0 };
   for (let i = 0; i < keys.length; i++) {
     const s = summaries[i] ?? { completed: 0, total: 0 };
     const k = keys[i];
     if (!k) continue;
-    const sc = dayCompletionScore(s, k);
+    const sc = dayCompletionScore(s, k, today);
     if (sc >= 1) out.strong += 1;
     else if (sc >= 0.5) out.partial += 1;
     else out.empty += 1;

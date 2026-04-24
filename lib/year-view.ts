@@ -96,16 +96,17 @@ export function weekBoxTitle(cell: YearWeekCell): string {
   return base;
 }
 
-export async function getYearView(year: number): Promise<YearViewData> {
+export async function getYearView(
+  year: number,
+  today: DateKey = todayKey(),
+): Promise<YearViewData> {
   const mondays = weekMondayKeysForCalendarYear(year);
   const allDayKeys = mondays.flatMap((mon) => weekKeys(fromDateKey(mon)));
   const uniqueKeys = [...new Set(allDayKeys)];
   const summaries = await getDaySummaries(uniqueKeys);
 
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  const thisWeekMonday = toDateKey(startOfWeek(fromDateKey(todayKey())));
-  const today = todayKey();
+  const currentYear = fromDateKey(today).getFullYear();
+  const thisWeekMonday = toDateKey(startOfWeek(fromDateKey(today)));
 
   const weeks: YearWeekCell[] = mondays.map((mon) => {
     const dayKeys = weekKeys(fromDateKey(mon));
@@ -115,10 +116,10 @@ export async function getYearView(year: number): Promise<YearViewData> {
     );
     const touchedWeek = daySummaries.some((s) => s.hasEntry);
     const scores = dayKeys.map((k, i) =>
-      dayCompletionScore(daySummaries[i]!, k),
+      dayCompletionScore(daySummaries[i]!, k, today),
     );
     const score = weeklyAverageScore(scores);
-    const breakdown = dayBreakdownFromScores(daySummaries, dayKeys);
+    const breakdown = dayBreakdownFromScores(daySummaries, dayKeys, today);
     const weekEnd = dayKeys[6]!;
     const visualState = yearWeekVisualState(
       mon,

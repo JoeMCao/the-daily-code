@@ -6,6 +6,7 @@ import {
   getCurrentProfile,
   toDateInputValue,
 } from "@/lib/profile";
+import { todayKeyForRequest } from "@/lib/request-time-zone";
 
 export const dynamic = "force-dynamic";
 
@@ -51,5 +52,11 @@ export default async function MementoMoriPage({
   }
 
   const summary = computeLifeWeekSummary(profile);
-  return <MementoMoriView profile={profile} summary={summary} />;
+  return (
+    <MementoMoriView
+      profile={profile}
+      summary={summary}
+      todayKey={todayKeyForRequest()}
+    />
+  );
 }

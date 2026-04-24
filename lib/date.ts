@@ -1,7 +1,9 @@
-// Date helpers. We treat a "date" as a calendar day in the user's local timezone,
-// and serialize it to "YYYY-MM-DD" for URLs and DB-facing UTC midnight Date objects.
+// Date helpers. We treat a "date" as a calendar day in the active local
+// timezone, and serialize it to "YYYY-MM-DD" for URLs and DB-facing UTC
+// midnight Date objects.
 
 export type DateKey = string; // "YYYY-MM-DD"
+export const TIME_ZONE_COOKIE_NAME = "daily_code_time_zone";
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
@@ -36,8 +38,40 @@ export function utcToDateKey(date: Date): DateKey {
   )}`;
 }
 
-export function todayKey(): DateKey {
-  return toDateKey(new Date());
+export function dateKeyInTimeZone(
+  date: Date,
+  timeZone: string,
+): DateKey {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(date);
+
+  const year = parts.find((part) => part.type === "year")?.value;
+  const month = parts.find((part) => part.type === "month")?.value;
+  const day = parts.find((part) => part.type === "day")?.value;
+
+  if (!year || !month || !day) {
+    throw new Error(`Unable to format date for time zone "${timeZone}"`);
+  }
+
+  return `${year}-${month}-${day}`;
+}
+
+export function isValidTimeZone(value: string | null | undefined): value is string {
+  if (!value) return false;
+  try {
+    Intl.DateTimeFormat(undefined, { timeZone: value });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export function todayKey(timeZone?: string): DateKey {
+  return timeZone ? dateKeyInTimeZone(new Date(), timeZone) : toDateKey(new Date());
 }
 
 export function addDays(date: Date, days: number): Date {
@@ -101,12 +135,12 @@ export function isSameMonth(key: DateKey, anchor: Date): boolean {
   return d.getMonth() === anchor.getMonth() && d.getFullYear() === anchor.getFullYear();
 }
 
-export function isToday(key: DateKey): boolean {
-  return key === todayKey();
+export function isToday(key: DateKey, today: DateKey = todayKey()): boolean {
+  return key === today;
 }
 
-export function isFuture(key: DateKey): boolean {
-  return key > todayKey();
+export function isFuture(key: DateKey, today: DateKey = todayKey()): boolean {
+  return key > today;
 }
 
 /**

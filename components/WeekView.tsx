@@ -19,11 +19,13 @@ export function WeekView({
   weekStartLabel,
   rows,
   eyebrow = "This week",
+  todayKey,
 }: {
   weekStartLabel: string;
   rows: WeekRow[];
   /** e.g. "This week" when viewing the current ISO week, or "Week" otherwise */
   eyebrow?: string;
+  todayKey: DateKey;
 }) {
   return (
     <section className="flex flex-col gap-8">
@@ -32,8 +34,8 @@ export function WeekView({
       <ol className="divide-y divide-line-subtle/90 overflow-hidden rounded-xl border border-line-subtle bg-white shadow-soft">
         {rows.map((row) => {
           const done = majorityComplete(row);
-          const future = isFuture(row.dateKey);
-          const today = isToday(row.dateKey);
+          const future = isFuture(row.dateKey, todayKey);
+          const today = isToday(row.dateKey, todayKey);
           const ratio = row.total > 0 ? row.completed / row.total : 0;
 
           return (

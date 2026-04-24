@@ -1,11 +1,18 @@
 import { MonthView, type MonthCell } from "@/components/MonthView";
 import { getDaySummaries, majorityComplete } from "@/lib/habits";
-import { isSameMonth, monthGridKeys, startOfMonth } from "@/lib/date";
+import {
+  fromDateKey,
+  isSameMonth,
+  monthGridKeys,
+  startOfMonth,
+} from "@/lib/date";
+import { todayKeyForRequest } from "@/lib/request-time-zone";
 
 export const dynamic = "force-dynamic";
 
 export default async function MonthPage() {
-  const now = new Date();
+  const today = todayKeyForRequest();
+  const now = fromDateKey(today);
   const anchor = startOfMonth(now);
   const keys = monthGridKeys(now);
   const summaries = await getDaySummaries(keys);
@@ -34,6 +41,7 @@ export default async function MonthPage() {
       monthLabel={monthLabel}
       cells={cells}
       totalsLabel={totalsLabel}
+      todayKey={today}
     />
   );
 }

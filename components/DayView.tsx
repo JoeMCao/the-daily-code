@@ -3,12 +3,19 @@ import { JournalInput } from "@/components/JournalInput";
 import { QuoteBlock } from "@/components/QuoteBlock";
 import { ViewPageHeader } from "@/components/ViewPageHeader";
 import type { DayData } from "@/lib/habits";
+import type { DateKey } from "@/lib/date";
 import { formatLongDate, isFuture, isToday } from "@/lib/date";
 import { quoteForDate } from "@/lib/quotes";
 
-export function DayView({ day }: { day: DayData }) {
-  const today = isToday(day.dateKey);
-  const future = isFuture(day.dateKey);
+export function DayView({
+  day,
+  todayKey,
+}: {
+  day: DayData;
+  todayKey: DateKey;
+}) {
+  const today = isToday(day.dateKey, todayKey);
+  const future = isFuture(day.dateKey, todayKey);
   const quote = quoteForDate(day.dateKey, "daily");
 
   return (

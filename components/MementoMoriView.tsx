@@ -6,7 +6,7 @@ import {
   viewFooterChrome,
   viewLegendSwatches,
 } from "@/components/ViewPageHeader";
-import { todayKey } from "@/lib/date";
+import type { DateKey } from "@/lib/date";
 import type { LifeWeekSummary } from "@/lib/profile";
 import type { Profile } from "@/lib/profile";
 import { quoteForDate } from "@/lib/quotes";
@@ -37,12 +37,14 @@ function SummaryStat({
 export function MementoMoriView({
   profile,
   summary,
+  todayKey,
 }: {
   profile: Profile;
   summary: LifeWeekSummary;
+  todayKey: DateKey;
 }) {
   const rows = summary.assumedLifespanYears;
-  const quote = quoteForDate(todayKey(), "memento");
+  const quote = quoteForDate(todayKey, "memento");
 
   return (
     <section className="flex min-h-0 flex-col gap-6 sm:flex-1">
