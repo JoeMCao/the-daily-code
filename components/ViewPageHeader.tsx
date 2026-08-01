@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 
 /**
- * Shared page chrome: eyebrow, title, optional dek, optional meta.
+ * Shared chrome for Day / Week / Month / Year / Memento views:
+ * eyebrow (label), title (h1), optional dek, optional meta (e.g. counts).
  */
 export function ViewPageHeader({
   eyebrow,
