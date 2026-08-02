@@ -7,8 +7,7 @@ import {
   viewLegendSwatches,
 } from "@/components/ViewPageHeader";
 import type { DateKey } from "@/lib/date";
-import type { LifeWeekSummary } from "@/lib/profile";
-import type { Profile } from "@/lib/profile";
+import type { LifeWeekSummary, Profile } from "@/lib/profile";
 import { quoteForDate } from "@/lib/quotes";
 
 function fmt(n: number): string {
@@ -47,7 +46,7 @@ export function MementoMoriView({
   const quote = quoteForDate(todayKey, "memento");
 
   return (
-    <section className="flex min-h-0 flex-col gap-6 sm:flex-1">
+    <section className="flex min-h-0 flex-1 flex-col gap-6">
       <div className="shrink-0">
         <ViewPageHeader eyebrow="Memento mori" title="Your life" />
       </div>
@@ -75,14 +74,16 @@ export function MementoMoriView({
         />
       </dl>
 
-      <MementoMoriLifeGrid
-        totalRows={rows}
-        currentWeekIndex={summary.currentWeekIndex}
-        weeksLived={summary.weeksLived}
-        currentLifeYearRowIndex={summary.currentLifeYearRowIndex}
-        ageYears={summary.ageYears}
-        weeksLivedLabel={`Life grid: ${summary.weeksLived} of ${summary.totalLifeWeeks} weeks lived`}
-      />
+      <div className="flex min-h-0 flex-1 flex-col">
+        <MementoMoriLifeGrid
+          totalRows={rows}
+          currentWeekIndex={summary.currentWeekIndex}
+          weeksLived={summary.weeksLived}
+          currentLifeYearRowIndex={summary.currentLifeYearRowIndex}
+          ageYears={summary.ageYears}
+          weeksLivedLabel={`Life grid: ${summary.weeksLived} of ${summary.totalLifeWeeks} weeks lived`}
+        />
+      </div>
 
       <div
         className={[
@@ -92,15 +93,15 @@ export function MementoMoriView({
       >
         <div className={viewLegendSwatches}>
           <span className="flex items-center gap-2">
-            <span className="h-3 w-3 rounded-sm border border-stone-500/95 bg-stone-500/88" />
+            <span className="box-border h-3 w-3 rounded-sm border border-line-subtle bg-[#78716c]" />
             Lived
           </span>
           <span className="flex items-center gap-2">
-            <span className="h-3 w-3 rounded-sm bg-ink" />
+            <span className="box-border h-3 w-3 rounded-sm border border-ink bg-ink" />
             This week
           </span>
           <span className="flex items-center gap-2">
-            <span className="h-3 w-3 rounded-sm border border-stone-200/95 bg-white/90" />
+            <span className="box-border h-3 w-3 rounded-sm border border-line-subtle bg-white" />
             Ahead
           </span>
         </div>

@@ -7,13 +7,21 @@ import {
   isFuture,
   isToday,
 } from "@/lib/date";
-import { majorityComplete } from "@/lib/habits";
 
 type WeekRow = {
   dateKey: DateKey;
   completed: number;
   total: number;
 };
+
+function progressClass(row: WeekRow): string {
+  if (row.completed === 0) return "bg-rose-200/70";
+
+  const ratio = row.total > 0 ? row.completed / row.total : 0;
+  if (ratio >= 0.75) return "bg-emerald-600";
+  if (ratio > 0.5) return "bg-emerald-300";
+  return "bg-lime-300";
+}
 
 export function WeekView({
   weekStartLabel,
@@ -33,10 +41,10 @@ export function WeekView({
 
       <ol className="divide-y divide-line-subtle/90 overflow-hidden rounded-xl border border-line-subtle bg-white shadow-soft">
         {rows.map((row) => {
-          const done = majorityComplete(row);
           const future = isFuture(row.dateKey, todayKey);
           const today = isToday(row.dateKey, todayKey);
           const ratio = row.total > 0 ? row.completed / row.total : 0;
+          const width = row.completed === 0 && !future ? "0.5rem" : `${Math.round(ratio * 100)}%`;
 
           return (
             <li key={row.dateKey}>
@@ -67,9 +75,9 @@ export function WeekView({
                     <div
                       className={[
                         "h-full rounded-full transition-all",
-                        done ? "bg-emerald-500" : "bg-stone-300",
+                        progressClass(row),
                       ].join(" ")}
-                      style={{ width: `${Math.round(ratio * 100)}%` }}
+                      style={{ width }}
                     />
                   </div>
                 </div>

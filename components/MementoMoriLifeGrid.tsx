@@ -6,6 +6,11 @@ const COLS = 52;
 /** Space for one compact year-marker strip above the current row. */
 const INDICATOR_RESERVE_PX = 16;
 const MIN_CELL_PX = 2;
+/** Must match `gap-6` between this grid block and footer in MementoMoriView. */
+const SECTION_GRID_FOOTER_GAP_PX = 24;
+const VIEWPORT_BOTTOM_BREATHE_PX = 12;
+/** sm+: bias layout height toward filling the viewport slice below the grid. */
+const DESKTOP_VIEWPORT_HEIGHT_SHARE = 0.88;
 
 type Layout = {
   cellPx: number;
@@ -101,7 +106,35 @@ export function MementoMoriLifeGrid({
     if (!el) return;
 
     const rect = el.getBoundingClientRect();
-    const laidOut = computeLayout(rect.width, rect.height, totalRows);
+    const parent = el.parentElement;
+    const widthPx = rect.width;
+    const vwH = window.visualViewport?.height ?? window.innerHeight;
+    let heightPx = Math.max(rect.height, parent?.clientHeight ?? 0);
+
+    let capFromFlow = Number.POSITIVE_INFINITY;
+    const section = el.closest("section");
+    if (section && section.children.length >= 2) {
+      const footer = section.children[section.children.length - 1] as HTMLElement;
+      const footerTop = footer.getBoundingClientRect().top;
+      capFromFlow = Math.max(
+        0,
+        footerTop - SECTION_GRID_FOOTER_GAP_PX - rect.top - 2,
+      );
+    }
+
+    const desktop =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(min-width: 640px)").matches;
+
+    if (desktop && capFromFlow !== Number.POSITIVE_INFINITY) {
+      const slice = vwH - rect.top - VIEWPORT_BOTTOM_BREATHE_PX;
+      const target = slice * DESKTOP_VIEWPORT_HEIGHT_SHARE;
+      heightPx = Math.min(Math.max(heightPx, target), capFromFlow);
+    } else if (capFromFlow !== Number.POSITIVE_INFINITY) {
+      heightPx = Math.min(heightPx, capFromFlow);
+    }
+
+    const laidOut = computeLayout(widthPx, heightPx, totalRows);
     setLayout(laidOut);
   }, [totalRows]);
 
@@ -134,19 +167,22 @@ export function MementoMoriLifeGrid({
       className={[
         "w-full min-h-[12rem] shrink-0",
         "max-sm:h-[min(52dvh,400px)] max-sm:overflow-x-hidden max-sm:overflow-y-auto",
-        "sm:min-h-0 sm:flex-1 sm:overflow-hidden",
+        "sm:h-full sm:min-h-0 sm:flex-1 sm:overflow-hidden",
       ].join(" ")}
     >
       <div
         className={[
-          "flex w-full flex-col",
+          "flex w-full flex-col items-center",
           "max-sm:min-h-0",
-          "sm:h-full md:h-full",
+          "sm:h-full sm:min-h-0",
         ].join(" ")}
       >
         <div
           aria-label={weeksLivedLabel}
-          className="mx-auto flex w-max max-w-full flex-col"
+          className={[
+            "grid-memento-canvas flex w-max max-w-full flex-col",
+            "mx-auto",
+          ].join(" ")}
           style={gridGapStyle}
         >
           {years.map((y) => {
@@ -164,11 +200,11 @@ export function MementoMoriLifeGrid({
                     }}
                     aria-hidden="true"
                   >
-                    <div className="h-px min-h-px min-w-[0.75rem] flex-1 bg-stone-400/28" />
-                    <span className="shrink-0 whitespace-nowrap font-serif text-[10px] leading-none text-stone-500/55">
+                    <div className="h-px min-h-px min-w-[0.75rem] flex-1 bg-line-subtle" />
+                    <span className="shrink-0 whitespace-nowrap font-serif text-[10px] leading-none text-ink-faint">
                       {ageYears === 1 ? "1 year" : `${ageYears} years`}
                     </span>
-                    <div className="h-px min-h-px min-w-[0.75rem] flex-1 bg-stone-400/28" />
+                    <div className="h-px min-h-px min-w-[0.75rem] flex-1 bg-line-subtle" />
                   </div>
                 )}
                 <div
@@ -191,12 +227,12 @@ export function MementoMoriLifeGrid({
                     const isCurrent = idx === currentWeekIndex;
                     const isLived = idx < weeksLived;
 
-                    const base = "box-border rounded-sm border";
+                    const base = "box-border rounded-sm border border-line-subtle";
                     const tone = isCurrent
                       ? "border-ink bg-ink"
                       : isLived
-                        ? "border-stone-500/95 bg-stone-500/88"
-                        : "border-stone-200/95 bg-white/90";
+                        ? "border-line-subtle bg-[#78716c]"
+                        : "border-line-subtle bg-white";
 
                     return (
                       <div

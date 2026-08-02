@@ -41,4 +41,9 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+
+  /** Memento life grid: white under cell gaps so "ahead" reads empty, not paper. */
+  .grid-memento-canvas {
+    background-color: #ffffff;
+  }
 }

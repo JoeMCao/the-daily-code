@@ -11,10 +11,10 @@ import type { YearWeekVisualState } from "@/lib/week-aggregate";
 const CELL_FRAME =
   "relative block rounded-xl border text-left transition-[background-color,border-color,opacity] duration-200 focus:outline-none focus:ring-2 focus:ring-ink/15 aspect-square min-h-[2.25rem] w-full min-w-0 sm:min-h-[2.75rem]";
 
-/** Elapsed week with no completions — subtle stripes, calm not punitive. */
+/** Elapsed week with no completions — warm stripes, visible but not punitive. */
 const MISSED_BG_STYLE = {
   backgroundImage:
-    "repeating-linear-gradient(-52deg, rgb(245 245 244) 0 8px, rgb(214 211 209 / 0.42) 8px 9px)",
+    "repeating-linear-gradient(-52deg, rgb(255 241 242 / 0.58) 0 8px, rgb(251 113 133 / 0.14) 8px 9px)",
 } as const;
 
 function classesForVisualState(v: YearWeekVisualState): string {
@@ -27,22 +27,22 @@ function classesForVisualState(v: YearWeekVisualState): string {
     case "strong":
       return [
         CELL_FRAME,
-        "border-emerald-600/35 bg-emerald-500/90 hover:bg-emerald-500",
+        "border-emerald-700/30 bg-emerald-600/85 hover:bg-emerald-600",
       ].join(" ");
     case "mixed":
       return [
         CELL_FRAME,
-        "border-emerald-700/40 bg-emerald-400/95 hover:bg-emerald-400",
+        "border-emerald-700/20 bg-emerald-300/75 hover:bg-emerald-300/85",
       ].join(" ");
     case "light":
       return [
         CELL_FRAME,
-        "border-line-subtle bg-stone-100 hover:border-stone-300/70 hover:bg-stone-100/95",
+        "border-lime-700/20 bg-lime-100/90 hover:border-lime-700/30 hover:bg-lime-100",
       ].join(" ");
     case "missedElapsed":
       return [
         CELL_FRAME,
-        "border-stone-400/55 hover:border-stone-500/45",
+        "border-rose-200/55 hover:border-rose-300/55",
       ].join(" ");
     case "notTracked":
       return [
@@ -59,11 +59,11 @@ function weekNumberClass(v: YearWeekVisualState): string {
     case "strong":
       return `${base} text-white/80`;
     case "mixed":
-      return `${base} text-emerald-950/45`;
+      return `${base} text-emerald-950/65`;
     case "light":
-      return `${base} text-stone-500`;
+      return `${base} text-lime-950/60`;
     case "missedElapsed":
-      return `${base} text-stone-500/85`;
+      return `${base} text-rose-950/50`;
     case "notTracked":
       return `${base} text-stone-400/90`;
     case "future":
@@ -111,20 +111,20 @@ function LegendSwatch({ variant }: { variant: YearWeekVisualState }) {
       );
     case "strong":
       return (
-        <span className="h-3 w-3 rounded-sm border border-emerald-600/35 bg-emerald-500" />
+        <span className="h-3 w-3 rounded-sm border border-emerald-700/30 bg-emerald-600" />
       );
     case "mixed":
       return (
-        <span className="h-3 w-3 rounded-sm border border-emerald-700/40 bg-emerald-400" />
+        <span className="h-3 w-3 rounded-sm border border-emerald-700/20 bg-emerald-300" />
       );
     case "light":
       return (
-        <span className="h-3 w-3 rounded-sm border border-line-subtle bg-stone-100" />
+        <span className="h-3 w-3 rounded-sm border border-lime-700/20 bg-lime-100" />
       );
     case "missedElapsed":
       return (
         <span
-          className="h-3 w-3 rounded-sm border border-stone-400/50"
+          className="h-3 w-3 rounded-sm border border-rose-200/55"
           style={MISSED_BG_STYLE}
         />
       );

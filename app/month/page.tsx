@@ -23,7 +23,12 @@ export default async function MonthPage() {
       total: 0,
       hasEntry: false,
     };
-    return { dateKey: k, completed: s.completed, total: s.total };
+    return {
+      dateKey: k,
+      completed: s.completed,
+      total: s.total,
+      hasEntry: s.hasEntry,
+    };
   });
 
   const monthLabel = anchor.toLocaleDateString(undefined, {
